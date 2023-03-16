@@ -23,13 +23,17 @@ const fetchWorldPopulationData = async () => {
       const population = populationElement.textContent.replace(/[\n\s]+/g, "");
       return { population };
     });
+
+    return data;
     // Log the extracted data
-    console.log(data);
+    //console.log(data);
     // Set a x-second interval before extracting the data again
-    setTimeout(extractData, retrieveDataInterval * 1000);
+    //setTimeout(extractData, retrieveDataInterval * 1000);
   };
   // Start extracting data
-  extractData();
+  const popData = await extractData();
+  await browser.close();
+  return popData;
 };
 
 /**
