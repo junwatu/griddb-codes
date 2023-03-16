@@ -1,6 +1,5 @@
 import puppeteer from "puppeteer";
 
-const retrieveDataInterval = 3;
 const worldPopDataSource = "https://www.worldometers.info/world-population/";
 const worldPopDataByCountrySource =
   "https://www.worldometers.info/world-population/population-by-country/";
@@ -9,11 +8,9 @@ const worldPopDataByCountrySource =
  * fetch world population data
  */
 const fetchWorldPopulationData = async () => {
-  // Launch a new browser instance
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
-  // Navigate to the target website
   await page.goto(worldPopDataSource);
 
   const extractData = async () => {
@@ -25,14 +22,11 @@ const fetchWorldPopulationData = async () => {
     });
 
     return data;
-    // Log the extracted data
-    //console.log(data);
-    // Set a x-second interval before extracting the data again
-    //setTimeout(extractData, retrieveDataInterval * 1000);
   };
-  // Start extracting data
+
   const popData = await extractData();
   await browser.close();
+
   return popData;
 };
 
@@ -40,11 +34,9 @@ const fetchWorldPopulationData = async () => {
  * fetch world population data by country
  */
 const fetchCountryPopulationData = async () => {
-  // Launch a new browser instance
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
-  // Navigate to the target website
   await page.goto(worldPopDataByCountrySource);
 
   // Extract data from the page
@@ -65,7 +57,6 @@ const fetchCountryPopulationData = async () => {
     return countryPopulationData;
   });
 
-  // Close the browser
   await browser.close();
 
   return data;
