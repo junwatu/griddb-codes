@@ -8,6 +8,10 @@ import {
 } from "./libs/worldPopulationData.js";
 
 const port = process.env.PORT || 3000;
+
+const worldDataUpdateTime = 3000;
+const countriesDataUpdateTime = 30000;
+
 const app = express();
 
 app.use(express.static("public"));
@@ -20,6 +24,10 @@ const wss = new WebSocketServer({ server });
 // Handle WebSocket connections
 wss.on("connection", (ws) => {
   console.log("Client connected");
+
+  ws.on("error", (error) => {
+    console.error("WebSocket error:", error);
+  });
 
   ws.on("close", () => {
     console.log("Client disconnected");
@@ -34,6 +42,9 @@ const updateClientsWithCountryPopulationData = async (clients) => {
       type: "countryPopulationData",
       countries: countryPopulationData,
     };
+
+    // DEBUG
+    console.log(data);
 
     clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
@@ -53,7 +64,9 @@ const updateClientsWithWorldPopulationData = async (clients) => {
       type: "worldPopulationData",
       worldPopulation,
     };
+    // DEBUG
     console.log(data);
+
     clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
         client.send(JSON.stringify(data));
@@ -65,15 +78,32 @@ const updateClientsWithWorldPopulationData = async (clients) => {
 };
 
 // Fetch data initially and send to clients
-//updateClientsWithCountryPopulationData(wss.clients);
 updateClientsWithWorldPopulationData(wss.clients);
 
-// Fetch country population data every 7 seconds and send to clients
-//setInterval(() => updateClientsWithCountryPopulationData(wss.clients), 7000);
+/**
+ * In general, if you need more control over the timing and execution of your function,
+ * setTimeout with recursion is a better choice. However, if you have a simple,
+ * lightweight function that needs to run at a fixed interval,
+ * setInterval can be more convenient.
+ */
+function updateClientsWithWorldPopulationDataPeriodically(clients) {
+  updateClientsWithWorldPopulationData(clients);
+  setTimeout(
+    () => updateClientsWithWorldPopulationDataPeriodically(clients),
+    worldDataUpdateTime
+  );
+}
 
-// Fetch world population data every 3 seconds and send to clients
-setInterval(() => updateClientsWithWorldPopulationData(wss.clients), 3000);
+// Call the function to start the periodic updates
+updateClientsWithWorldPopulationDataPeriodically(wss.clients);
 
+updateClientsWithCountryPopulationData(wss.clients);
+setInterval(
+  () => updateClientsWithCountryPopulationData(wss.clients),
+  countriesDataUpdateTime
+);
+
+// Manual request
 app.get("/api/countries", async (req, res) => {
   try {
     const data = await fetchCountryPopulationData();
