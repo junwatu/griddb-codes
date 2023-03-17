@@ -3,14 +3,14 @@ lockfileVersion: 5.4
 specifiers:
   axios: ^1.3.4
   express: ^4.18.2
-  griddb_node: ^0.8.4
+  griddb-node-api: ^0.8.6
   puppeteer: ^19.7.5
   ws: ^8.13.0
 
 dependencies:
   axios: 1.3.4
   express: 4.18.2
-  griddb_node: 0.8.4
+  griddb-node-api: 0.8.6
   puppeteer: 19.7.5
   ws: 8.13.0
 
@@ -461,8 +461,10 @@ packages:
       path-scurry: 1.6.1
     dev: false
 
-  /griddb_node/0.8.4:
-    resolution: {integrity: sha512-TbSCUqe0Bk1mlTaRskDJPU/PWlWQTSMoqcT2qeQLvKJNK6kndvjCaGaFUhoLzGEA+k1AzTXdv88Q1DMbDQ7ZlQ==}
+  /griddb-node-api/0.8.6:
+    resolution: {integrity: sha512-rxjYu9PD2yRi7SolajSxT5aa2kyuV/SxtXiuQRsUbRaSQTUQq0eVeQUlnb+WNqu4Jl7n9d1a0qTiGP4i0Bx6Cw==}
+    dependencies:
+      node-addon-api: 6.0.0
     dev: false
 
   /has-flag/3.0.0:
@@ -626,6 +628,10 @@ packages:
   /negotiator/0.6.3:
     resolution: {integrity: sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==}
     engines: {node: '>= 0.6'}
+    dev: false
+
+  /node-addon-api/6.0.0:
+    resolution: {integrity: sha512-GyHvgPvUXBvAkXa0YvYnhilSB1A+FRYMpIVggKzPZqdaZfevZOuzfWzyvgzOwRLHBeo/MMswmJFsrNF4Nw1pmA==}
     dev: false
 
   /node-fetch/2.6.7:
