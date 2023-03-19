@@ -49,7 +49,7 @@ async function initGridDbTS() {
 		const store = await initStore()
 		const conInfo = await initContainer()
 		const timeSeriesDb = await createContainer(store, conInfo)
-		return timeSeriesDb
+		return { timeSeriesDb, store, conInfo }
 	}
 	catch (e) {
 		console.error(err);
