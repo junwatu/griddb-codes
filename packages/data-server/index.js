@@ -3,19 +3,21 @@ import express from "express";
 import { WebSocket, WebSocketServer } from "ws";
 import { EventEmitter } from 'events';
 import path from "node:path";
+import { fileURLToPath } from 'url';
+
 import {
   fetchCountryPopulationData,
   fetchWorldPopulationData,
 } from "./libs/worldPopulationData.js";
-import { fileURLToPath } from 'url'
+import * as GridDB from "./libs/griddb.cjs";
 
 const port = process.env.PORT || 3000;
-
 const worldDataUpdateTime = 5000;
 const countriesDataUpdateTime = 30000;
 
-const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const app = express();
+
 
 EventEmitter.defaultMaxListeners = 20; // Increase the global limit to 20 listeners
 
