@@ -22,7 +22,9 @@ try {
   });
 
   store.dropContainer(containerName)
-    .then(() => {
+    
+  /**
+  .then(() => {
       return store.putContainer(conInfo);
     })
     .then(() => {
@@ -33,6 +35,7 @@ try {
     .catch(err => {
       console.log(err);
     });
+    */
 } catch (error) {
   console.log(error);
 }
