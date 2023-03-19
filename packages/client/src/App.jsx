@@ -1,5 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
+import WebSocket from "ws"
+
 import 'mapbox-gl/dist/mapbox-gl.css';
 import './App.css'
 
@@ -11,6 +13,7 @@ function App() {
   const [lng, setLng] = useState(0);
   const [lat, setLat] = useState(0);
   const [zoom, setZoom] = useState(1.5);
+  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
     if (map.current) return; 
@@ -23,8 +26,40 @@ function App() {
     });
   });
 
+  useEffect(() => {
+    // Replace 'wss://example.com' with your WebSocket server URL
+    const ws = new WebSocket('wss://localhost:3000');
+    setSocket(ws);
+
+    ws.addEventListener('open', (event) => {
+      console.log('WebSocket connected:', event);
+    });
+
+    ws.addEventListener('message', (event) => {
+      console.log('WebSocket message:', event.data);
+      console.log(JSON.stringify(data, null, 2))
+    });
+
+    ws.addEventListener('error', (event) => {
+      console.error('WebSocket error:', event);
+    });
+
+    ws.addEventListener('close', (event) => {
+      console.log('WebSocket disconnected:', event);
+    });
+
+    return () => {
+      if (ws) {
+        ws.close();
+      }
+    };
+  }, []);
+
   return (
     <div className="App">
+      <div className="sidebar">
+        World Population: {lng}
+      </div>
       <div ref={mapContainer} className="map-container" />
     </div>
   )
