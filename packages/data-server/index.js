@@ -1,20 +1,25 @@
 import http from "node:http";
 import express from "express";
 import { WebSocket, WebSocketServer } from "ws";
-
+import { EventEmitter } from 'events';
+import path from "node:path";
 import {
   fetchCountryPopulationData,
   fetchWorldPopulationData,
 } from "./libs/worldPopulationData.js";
+import { fileURLToPath } from 'url'
 
 const port = process.env.PORT || 3000;
 
-const worldDataUpdateTime = 3000;
+const worldDataUpdateTime = 5000;
 const countriesDataUpdateTime = 30000;
 
 const app = express();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-app.use(express.static("public"));
+EventEmitter.defaultMaxListeners = 20; // Increase the global limit to 20 listeners
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 // create an HTTP server
 const server = http.createServer(app);
@@ -48,7 +53,11 @@ const updateClientsWithCountryPopulationData = async (clients) => {
 
     clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify(data));
+        try {
+          client.send(JSON.stringify(data));
+        } catch (error) {
+          console.error("Error sending data to client:", error);
+        }
       }
     });
   } catch (error) {
@@ -69,7 +78,11 @@ const updateClientsWithWorldPopulationData = async (clients) => {
 
     clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify(data));
+        try {
+          client.send(JSON.stringify(data));
+        } catch (error) {
+          console.error("Error sending data to client:", error);
+        }
       }
     });
   } catch (error) {
@@ -122,6 +135,11 @@ app.get("/api/world", async (req, res) => {
     console.error(error);
     res.status(500).json({ error: "Failed to fetch data" });
   }
+});
+
+
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname, "public/index.html"));
 });
 
 server.listen(port, () => {
