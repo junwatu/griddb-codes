@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Real-time Country Population Data</title>
+  </head>
+  <body>
+    <h1>Country Population Data</h1>
+    <pre id="data"></pre>
+
+    <script>
+      const dataElement = document.getElementById("data");
+      const ws = new WebSocket(`ws://${location.host}`);
+
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        dataElement.textContent = JSON.stringify(data, null, 2);
+      };
+
+      ws.onclose = () => {
+        console.log("WebSocket connection closed");
+      };
+    </script>
+  </body>
+</html>
