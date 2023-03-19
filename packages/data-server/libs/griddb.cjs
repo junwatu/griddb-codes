@@ -115,7 +115,7 @@ async function queryAll(db) {
 
 		while (rowset.hasNext()) {
 			const row = rowset.next();
-			const rowData = { date: row[0], value: row[1] };
+			const rowData = { timestamp: `${row[0]}`, population: row[1] };
 			results.push(rowData);
 		}
 
