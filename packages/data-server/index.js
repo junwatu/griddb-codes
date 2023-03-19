@@ -89,10 +89,18 @@ const updateClientsWithWorldPopulationData = async (clients) => {
     const result = await GridDB.queryAll(timeSeriesDb);
     console.log(result)
 
+    const jsonArray = result.map(item => {
+      return {
+        timestamp: item.timestamp.toString(),
+        population: item.population
+      };
+    });
+
+
     clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
         try {
-          client.send(JSON.stringify(data));
+          client.send(JSON.stringify(jsonArray));
         } catch (error) {
           console.error("Error sending data to client:", error);
         }
