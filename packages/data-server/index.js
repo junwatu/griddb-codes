@@ -17,7 +17,11 @@ const countriesDataUpdateTime = 30000;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
-const { timeseriesDb } = await GridDB.initGridDbTS()
+const { timeseriesDb, store } = await GridDB.initGridDbTS()
+
+// Container Info
+GridDB.containersInfo(store)
+
 
 EventEmitter.defaultMaxListeners = 20; // Increase the global limit to 20 listeners
 
