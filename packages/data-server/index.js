@@ -4,12 +4,16 @@ import { WebSocket, WebSocketServer } from "ws";
 import { EventEmitter } from 'events';
 import path from "node:path";
 import { fileURLToPath } from 'url';
-
+import * as GridDB from "./libs/griddb.cjs";
 import {
   fetchCountryPopulationData,
   fetchWorldPopulationData,
 } from "./libs/worldPopulationData.js";
-import * as GridDB from "./libs/griddb.cjs";
+
+const { timeSeriesDb, store, conInfo } = await GridDB.initGridDbTS()
+// Container Info
+
+GridDB.containersInfo(store)
 
 const port = process.env.PORT || 3000;
 const worldDataUpdateTime = 5000;
@@ -17,11 +21,6 @@ const countriesDataUpdateTime = 30000;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
-const { timeseriesDb, store } = await GridDB.initGridDbTS()
-
-// Container Info
-GridDB.containersInfo(store)
-
 
 EventEmitter.defaultMaxListeners = 20; // Increase the global limit to 20 listeners
 
@@ -79,8 +78,16 @@ const updateClientsWithWorldPopulationData = async (clients) => {
       type: "worldPopulationData",
       worldPopulation,
     };
+
     // DEBUG
-    console.log(data);
+    // console.log("console:", data);
+
+    // SAVE
+    const worldPopData = [worldPopulation.timestamp, worldPopulation.population];
+    await GridDB.insert(worldPopData, timeSeriesDb);
+
+    const result = await GridDB.queryAll(timeSeriesDb);
+    console.log(result)
 
     clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
@@ -142,7 +149,6 @@ app.get("/api/world", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch data" });
   }
 });
-
 
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, "public/index.html"));
