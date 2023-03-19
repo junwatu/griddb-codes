@@ -21,7 +21,8 @@ const fetchWorldPopulationData = async () => {
       const data = await page.evaluate(() => {
         const populationElement = document.querySelector(".rts-counter");
         const population = populationElement.textContent.replace(/[\n\s]+/g, "");
-        return { population };
+        const timestamp = (new Date()).getTime()
+        return { population, timestamp };
       });
 
       return data;
