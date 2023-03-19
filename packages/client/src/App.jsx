@@ -10,12 +10,13 @@ function App() {
   const map = useRef(null);
   const [lng, setLng] = useState(0);
   const [lat, setLat] = useState(0);
-  const [zoom, setZoom] = useState(1);
+  const [zoom, setZoom] = useState(1.5);
 
   useEffect(() => {
-    if (map.current) return; // initialize map only once
+    if (map.current) return; 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
+      // flat map
       style: 'mapbox://styles/mapbox/streets-v11',
       center: [lng, lat],
       zoom: zoom
