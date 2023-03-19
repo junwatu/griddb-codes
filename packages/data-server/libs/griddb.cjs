@@ -25,8 +25,8 @@ function initContainer() {
 	const conInfo = new griddb.ContainerInfo({
 		'name': containerName,
 		'columnInfoList': [
-			["date", griddb.Type.TIMESTAMP],
-			["value", griddb.Type.DOUBLE]
+			["timestamp", griddb.Type.TIMESTAMP],
+			["population", griddb.Type.STRING]
 		],
 		'type': griddb.ContainerType.TIME_SERIES
 	});
@@ -51,7 +51,7 @@ async function initGridDbTS() {
 		const timeSeriesDb = await createContainer(store, conInfo)
 		return { timeSeriesDb, store, conInfo }
 	}
-	catch (e) {
+	catch (err) {
 		console.error(err);
 		throw err;
 	}
@@ -139,7 +139,8 @@ module.exports = {
 	insert,
 	queryAll,
 	dropContainer,
-	containersInfo
+	containersInfo,
+	containerName
 }
 
 
