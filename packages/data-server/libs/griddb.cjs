@@ -65,18 +65,17 @@ async function containersInfo(store) {
 					// Get container information
 					store.getContainerInfo(element)
 						.then((info) => {
-							console.log("Get ContainerInfo: \n    name=%s", info.name);
+							console.log("Get ContainerInfo: \nname=%s", info.name);
 							if (info.type == griddb.ContainerType.COLLECTION) {
-								console.log('    type=Collection');
+								console.log('type=Collection');
 							} else {
-								console.log('    type=TimeSeries');
+								console.log('type=TimeSeries');
 							}
-							console.log("    rowKeyAssigned=%s", info.rowKey.toString());
-							console.log("    columnCount=%d", info.columnInfoList.length);
+							console.log("rowKeyAssigned=%s", info.rowKey.toString());
+							console.log("columnCount=%d", info.columnInfoList.length);
 							info.columnInfoList.forEach(
-								element => console.log("    column (%s, %d)", element[0], element[1])
+								element => console.log("column (%s, %d)", element[0], element[1])
 							);
-							console.log('Success!');
 						})
 					console.log(element)
 				});
@@ -132,17 +131,13 @@ async function dropContainer(store, containerName) {
 	store.dropContainer(containerName).then(() => { return "OK" }).catch(e => { throw new Error(e) })
 }
 
-function getTimestamp() {
-	return (new Date()).getTime()
-}
-
-export {
+module.exports = {
 	initStore,
 	initContainer,
 	initGridDbTS,
 	createContainer,
-	insert as insertData,
-	queryAll as queryAllData,
+	insert,
+	queryAll,
 	dropContainer,
 	containersInfo
 }
