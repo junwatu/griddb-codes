@@ -26,6 +26,12 @@ EventEmitter.defaultMaxListeners = 20; // Increase the global limit to 20 listen
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+  next();
+});
+
 // create an HTTP server
 const server = http.createServer(app);
 // create  WebSocker server
