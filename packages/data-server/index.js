@@ -59,13 +59,38 @@ const updateClientsWithCountryPopulationData = async (clients) => {
       countries: countryPopulationData,
     };
 
+    const top10countries = data.countries.slice(0, 10)
+
     // DEBUG
-    console.log(data);
+    console.log(top10countries);
+
+    const coordinateCountriesArr = [{ country: 'China', coordinates: [104.1954, 35.8617] },
+    { country: 'India', coordinates: [78.9629, 20.5937] },
+    { country: 'United States', coordinates: [-98.5855, 39.8333] },
+    { country: 'Indonesia', coordinates: [113.9213, -0.7893] },
+    { country: 'Pakistan', coordinates: [69.3451, 30.3753] },
+    { country: 'Brazil', coordinates: [-53.0930, -14.2350] },
+    { country: 'Nigeria', coordinates: [8.6753, 9.0820] },
+    { country: 'Bangladesh', coordinates: [90.3563, 23.6850] },
+    { country: 'Russia', coordinates: [105.3188, 61.5240] },
+    { country: 'Mexico', coordinates: [-102.5528, 23.6345] },
+    ]
+
+    const countriesPopulationWithCoordinate = top10countries.map(obj2 => {
+      const obj1 = coordinateCountriesArr.find(obj1 => obj1.country === obj2.country);
+      if (obj1 && obj1.coordinates) {
+        return { ...obj1, ...obj2 };
+      } else {
+        return null;
+      }
+    }).filter(obj => obj !== null);
+
+    console.log(countriesPopulationWithCoordinate);
 
     clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
         try {
-          client.send(JSON.stringify(data));
+          client.send(JSON.stringify(countriesPopulationWithCoordinate));
         } catch (error) {
           console.error("Error sending data to client:", error);
         }
