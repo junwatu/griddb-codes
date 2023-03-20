@@ -4,7 +4,8 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import './App.css'
 
-mapboxgl.accessToken = 'pk.eyJ1IjoicHJhLXBhbmd1cmFrYW4iLCJhIjoiY2xmZzg3Y3hzMTN6bTN6bnpvZTd1eW1ybiJ9.PZNGQeIDzyn7xndFUu7Udg';
+const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoicHJhLXBhbmd1cmFrYW4iLCJhIjoiY2xmZzg3Y3hzMTN6bTN6bnpvZTd1eW1ybiJ9.PZNGQeIDzyn7xndFUu7Udg'; 
+mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 
 function App() {
   const mapContainer = useRef(null);
@@ -15,17 +16,65 @@ function App() {
   const [socket, setSocket] = useState(null);
   const [worldPopulation, setWorldPopulation] = useState(0);
 
+  const updateLabels = (countries) => {
+    countries.forEach((item, index) => {
+      const source = map.current.getSource(`label-source-${index}`);
+      if (source) {
+        source.setData({
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: item.coordinates,
+          },
+          properties: {
+            label: `${item.country}: ${item.population}`,
+          },
+        });
+      } else {
+        map.current.addSource(`label-source-${index}`, {
+          type: 'geojson',
+          data: {
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: item.coordinates,
+            },
+            properties: {
+              label: `${item.country}: ${item.population}`,
+            },
+          },
+        });
+
+        map.current.addLayer({
+          id: `label-layer-${index}`,
+          type: 'symbol',
+          source: `label-source-${index}`,
+          layout: {
+            'text-field': ['get', 'label'],
+            'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
+            'text-radial-offset': 0.5,
+            'text-justify': 'auto',
+          },
+          paint: {
+            'text-color': '#000',
+            'text-halo-color': '#fff',
+            'text-halo-width': 2,
+          },
+        });
+      }
+    });
+  };
+  
   useEffect(() => {
-    if (map.current) return; 
+    if (map.current) return;
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      // flat map
       style: 'mapbox://styles/mapbox/streets-v11',
       center: [lng, lat],
       zoom: zoom
     });
-
   });
+
 
   useEffect(() => {
     // Replace 'wss://example.com' with your WebSocket server URL
@@ -38,8 +87,15 @@ function App() {
 
     ws.addEventListener('message', (event) => {
       //console.log('WebSocket message: OK');
-      const worldPopulationData = JSON.parse(event.data);
-      setWorldPopulation(worldPopulationData[0].population);
+      console.log(event.data)  
+     
+      const data = JSON.parse(event.data);
+      setWorldPopulation(data[0].population);
+     
+      if (data[0].country) {
+          console.log("country",data)
+          updateLabels(data);
+      }
     });
 
     ws.addEventListener('error', (event) => {
