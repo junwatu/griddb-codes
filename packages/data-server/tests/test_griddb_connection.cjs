@@ -4,7 +4,6 @@ const factory = griddb.StoreFactory.getInstance();
 try {
   const store = factory.getStore({
     host: "127.0.0.1",
-    // transaction port (see in griddb config gs_cluster.json)
     port: 10001,
     clusterName: "myCluster",
     username: "admin",
@@ -15,14 +14,14 @@ try {
   var conInfo = new griddb.ContainerInfo({
     'name': containerName,
     'columnInfoList': [
-      ["date", griddb.Type.TIMESTAMP],
-      ["population", griddb.Type.DOUBLE]
+      ["timestamp", griddb.Type.TIMESTAMP],
+      ["population", griddb.Type.STRING]
     ],
     'type': griddb.ContainerType.TIME_SERIES
   });
 
-  store.dropContainer(containerName)
-    
+  //store.dropContainer(containerName)
+
   /**
   .then(() => {
       return store.putContainer(conInfo);
