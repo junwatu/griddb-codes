@@ -86,16 +86,15 @@ function App() {
     });
 
     ws.addEventListener('message', (event) => {
-      //console.log('WebSocket message: OK');
-      console.log(event.data)  
-     
       const data = JSON.parse(event.data);
-      setWorldPopulation(data[0].population);
-     
+
       if (data[0].country) {
           console.log("country",data)
           updateLabels(data);
+      } else {
+        setWorldPopulation(data[0].population);
       }
+      
     });
 
     ws.addEventListener('error', (event) => {
