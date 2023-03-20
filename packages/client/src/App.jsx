@@ -13,6 +13,7 @@ function App() {
   const [lat, setLat] = useState(0);
   const [zoom, setZoom] = useState(1.5);
   const [socket, setSocket] = useState(null);
+  const [worldPopulation, setWorldPopulation] = useState(0);
 
   useEffect(() => {
     if (map.current) return; 
@@ -23,11 +24,12 @@ function App() {
       center: [lng, lat],
       zoom: zoom
     });
+
   });
 
   useEffect(() => {
     // Replace 'wss://example.com' with your WebSocket server URL
-    const ws = new WebSocket('wss://localhost:3000');
+    const ws = new WebSocket('ws://localhost:3000');
     setSocket(ws);
 
     ws.addEventListener('open', (event) => {
@@ -35,8 +37,9 @@ function App() {
     });
 
     ws.addEventListener('message', (event) => {
-      console.log('WebSocket message:', event.data);
-      console.log(JSON.stringify(data, null, 2))
+      //console.log('WebSocket message: OK');
+      const worldPopulationData = JSON.parse(event.data);
+      setWorldPopulation(worldPopulationData[0].population);
     });
 
     ws.addEventListener('error', (event) => {
@@ -57,7 +60,7 @@ function App() {
   return (
     <div className="App">
       <div className="sidebar">
-        World Population: {lng}
+        World Population: {worldPopulation}
       </div>
       <div ref={mapContainer} className="map-container" />
     </div>
