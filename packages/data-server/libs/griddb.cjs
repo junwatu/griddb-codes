@@ -107,7 +107,9 @@ async function insert(data, db) {
 
 // Query all data
 async function queryAll(db) {
-	const query = db.query("select *");
+	const q = `SELECT * FROM ${containerName} ORDER BY timestamp DESC LIMIT 1`;
+	//const query = db.query("select *");
+	const query = db.query(q);
 
 	try {
 		const rowset = await query.fetch();
