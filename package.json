@@ -5,6 +5,7 @@
   "main": "index.js",
   "private": "true",
   "scripts": {
+    "start": "concurrently 'pnpm --filter data-server start' 'pnpm --filter client run dev'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -12,5 +13,8 @@
   "license": "ISC",
   "engines": {
     "node": ">= 18.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
   }
 }
